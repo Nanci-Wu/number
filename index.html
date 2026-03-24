@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义骰子</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: transparent;
+        }
+        .dice-box {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin-bottom: 30px;
+            perspective: 1000px;
+        }
+        .dice {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transform: rotateX(0deg) rotateY(0deg);
+        }
+        .dice-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: none;
+            border-radius: 0;
+        }
+        .face1 { transform: rotateY(0deg) translateZ(100px); }
+        .face2 { transform: rotateY(90deg) translateZ(100px); }
+        .face3 { transform: rotateY(180deg) translateZ(100px); }
+        .face4 { transform: rotateY(-90deg) translateZ(100px); }
+        .face5 { transform: rotateX(90deg) translateZ(100px); }
+        .face6 { transform: rotateX(-90deg) translateZ(100px); }
+
+        #rollBtn {
+            padding: 12px 30px;
+            font-size: 18px;
+            background: #42b983;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="dice-box">
+        <div class="dice" id="dice">
+            <div class="dice-face face1" style="background-image: url('图片1.png')"></div>
+            <div class="dice-face face2" style="background-image: url('图片2.png')"></div>
+            <div class="dice-face face3" style="background-image: url('图片3.png')"></div>
+            <div class="dice-face face4" style="background-image: url('图片4.png')"></div>
+            <div class="dice-face face5" style="background-image: url('图片5.png')"></div>
+            <div class="dice-face face6" style="background-image: url('图片6.png')"></div>
+        </div>
+    </div>
+
+    <button id="rollBtn">点击开始掷骰子</button>
+
+    <script>
+        const dice = document.getElementById('dice');
+        const rollBtn = document.getElementById('rollBtn');
+        let isRolling = false;
+        let rollInterval;
+
+        const faces = [
+            { x: 0, y: 0 },
+            { x: 0, y: -90 },
+            { x: 0, y: 180 },
+            { x: 0, y: 90 },
+            { x: -90, y: 0 },
+            { x: 90, y: 0 }
+        ];
+
+        rollBtn.onclick = function () {
+            if (!isRolling) {
+                isRolling = true;
+                rollBtn.textContent = "点击停止";
+                rollInterval = setInterval(() => {
+                    let x = Math.random() * 720;
+                    let y = Math.random() * 720;
+                    dice.style.transform = `rotateX(${x}deg) rotateY(${y}deg)`;
+                    dice.style.transition = "0.1s linear";
+                }, 100);
+            } else {
+                isRolling = false;
+                rollBtn.textContent = "点击开始掷骰子";
+                clearInterval(rollInterval);
+                
+                let randomFace = faces[Math.floor(Math.random() * 6)];
+                dice.style.transition = "0.8s ease-out";
+                dice.style.transform = `rotateX(${randomFace.x}deg) rotateY(${randomFace.y}deg)`;
+            }
+        };
+    </script>
+</body>
+</html>
